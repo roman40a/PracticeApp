@@ -1,11 +1,11 @@
 import React, { useLayoutEffect } from "react";
 import { Text } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useAppNavigation, useAppRoute } from "../util/useNavigation";
 
 export const ManageExpense: React.FC = () => {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const editingExpenseId: string | undefined = route?.params?.expenseId;
+  const route = useAppRoute();
+  const navigation = useAppNavigation();
+  const editingExpenseId = route.params?.expenseId;
   const isEditing = Boolean(editingExpenseId);
 
   useLayoutEffect(() => {

@@ -2,7 +2,7 @@ import { FC, useCallback } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import { getFormattedDate } from "../../util/date";
-import { useNavigation } from "@react-navigation/native";
+import { useAppNavigation } from "../../util/useNavigation";
 
 type TExpenseItem = {
   id: string;
@@ -16,7 +16,7 @@ export const ExpenseItem: FC<TExpenseItem> = ({
   amount,
   date,
 }) => {
-  const navigation = useNavigation();
+  const navigation = useAppNavigation();
   const expensePressHandler = useCallback((): void => {
     navigation.navigate("ManageExpense", { expenseId: id });
   }, []);
