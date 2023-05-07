@@ -12,7 +12,7 @@ export const ManageExpense: React.FC = () => {
   const editingExpenseId = route.params?.expenseId;
   const isEditing = Boolean(editingExpenseId);
 
-  const expenseContext = useExpenseContext();
+  const { addExpense, deleteExpense, updateExpense } = useExpenseContext();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -23,16 +23,37 @@ export const ManageExpense: React.FC = () => {
   const closeHandler = useCallback((): void => {
     navigation.goBack();
   }, [navigation]);
+
   const deleteExpenseHandler = useCallback((): void => {
     if (editingExpenseId) {
-      expenseContext.deleteExpense(editingExpenseId);
+      deleteExpense(editingExpenseId);
     }
     closeHandler();
-  }, [closeHandler]);
+  }, [closeHandler, deleteExpense]);
+
   const cancelHandler = useCallback((): void => {
     closeHandler();
   }, [closeHandler]);
+
   const confirmHandler = useCallback((): void => {
+    if (isEditing) {
+      if (editingExpenseId) {
+        updateExpense({
+          id: editingExpenseId,
+          data: {
+            description: "Updated expense",
+            amount: 1,
+            date: new Date(),
+          },
+        });
+      }
+    } else {
+      addExpense({
+        description: "Added expense",
+        amount: 0,
+        date: new Date(),
+      });
+    }
     closeHandler();
   }, [closeHandler]);
 

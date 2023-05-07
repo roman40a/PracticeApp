@@ -154,5 +154,5 @@ export const ExpensesContextProvider: FC<TExpensesContextProviderProps> = ({
   );
 };
 
-export const useExpenseContext = () =>
+export const useExpenseContext = (): TExpensesContext =>
   useContext<TExpensesContext>(ExpensesContext);

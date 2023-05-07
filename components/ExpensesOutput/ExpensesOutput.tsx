@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 import { ExpensesSummary } from "./ExpensesSummary";
 import { ExpensesList } from "./ExpensesList";
 import { TExpense } from "./types";
@@ -16,7 +17,14 @@ export const ExpensesOutput: FC<TExpensesOutputProps> = ({
   return (
     <View style={styles.container}>
       <ExpensesSummary expenses={expenses} periodName={expensePeriod} />
-      <ExpensesList expenses={expenses} />
+      {expenses.length === 0 ? (
+        <View style={styles.noDataContainer}>
+          <Text style={styles.noDataText}>No Expenses</Text>
+          <AntDesign name="inbox" size={48} color="white" />
+        </View>
+      ) : (
+        <ExpensesList expenses={expenses} />
+      )}
     </View>
   );
 };
@@ -28,5 +36,16 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     backgroundColor: GlobalStyles.colors.primary700,
     flex: 1,
+  },
+  noDataContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  noDataText: {
+    color: "white",
+    fontSize: 18,
+    marginBottom: 8,
+    textAlign: "center",
   },
 });
