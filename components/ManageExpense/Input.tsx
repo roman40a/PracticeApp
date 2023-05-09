@@ -14,15 +14,24 @@ type TInputProps = {
   label: string;
   textInputProps?: TextInputProps;
   style?: StyleProp<ViewStyle>;
+  isInvalid?: boolean;
 };
-export const Input: FC<TInputProps> = ({ label, textInputProps, style }) => {
+export const Input: FC<TInputProps> = ({
+  label,
+  textInputProps,
+  style,
+  isInvalid,
+}) => {
   return (
     <View style={[styles.form, style]}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, isInvalid && styles.errorLabel]}>
+        {label}
+      </Text>
       <TextInput
         style={[
           styles.input,
           textInputProps?.multiline && styles.inputMultiline,
+          isInvalid && styles.errorInput,
         ]}
         {...textInputProps}
       />
@@ -51,5 +60,10 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: "top",
   },
-  error: {},
+  errorLabel: {
+    color: GlobalStyles.colors.error500,
+  },
+  errorInput: {
+    backgroundColor: GlobalStyles.colors.error50,
+  },
 });
