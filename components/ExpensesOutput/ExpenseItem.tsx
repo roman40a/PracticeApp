@@ -2,7 +2,7 @@ import { FC, useCallback } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import { getFormattedDate } from "../../util/date";
-import { useAppNavigation } from "../../util/useNavigation";
+import { useAppNavigation } from "../../util/hooks";
 
 type TExpenseItem = {
   id: string;

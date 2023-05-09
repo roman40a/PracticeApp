@@ -9,7 +9,7 @@ import { RecentExpenses } from "./screens/RecentExpenses";
 import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { IconButton } from "./components/UI/IconButton";
-import { useAppNavigation } from "./util/useNavigation";
+import { useAppNavigation } from "./util/hooks";
 import { ExpensesContextProvider } from "./store/expenses-context";
 
 const Stack = createNativeStackNavigator();
