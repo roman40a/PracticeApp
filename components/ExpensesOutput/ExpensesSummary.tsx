@@ -15,7 +15,7 @@ export const ExpensesSummary: FC<TExpensesSummaryProps> = ({
     return prev + curr.amount;
   }, 0);
   return (
-    <View style={styles.container}>
+    <View style={styles.form}>
       <Text style={styles.period}>{periodName}</Text>
       <Text style={styles.sum}>{`$${expensesSum.toFixed(2)}`}</Text>
     </View>
@@ -23,7 +23,7 @@ export const ExpensesSummary: FC<TExpensesSummaryProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  form: {
     padding: 8,
     backgroundColor: GlobalStyles.colors.primary50,
     borderRadius: 6,

@@ -1,10 +1,11 @@
-import React, { useCallback, useLayoutEffect } from "react";
+import React, { useCallback, useLayoutEffect, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { useAppNavigation, useAppRoute } from "../util/useNavigation";
 import { IconButton } from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
-import { Button } from "../components/UI/Button";
 import { useExpenseContext } from "../store/expenses-context";
+import { ExpenseForm } from "../components/ManageExpense/ExpenseForm";
+import { TExpense } from "../components/ExpensesOutput/types";
 
 export const ManageExpense: React.FC = () => {
   const route = useAppRoute();
@@ -12,7 +13,8 @@ export const ManageExpense: React.FC = () => {
   const editingExpenseId = route.params?.expenseId;
   const isEditing = Boolean(editingExpenseId);
 
-  const { addExpense, deleteExpense, updateExpense } = useExpenseContext();
+  const { updateExpense, addExpense, deleteExpense, expenses } =
+    useExpenseContext();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,42 +33,35 @@ export const ManageExpense: React.FC = () => {
     closeHandler();
   }, [closeHandler, deleteExpense]);
 
-  const cancelHandler = useCallback((): void => {
-    closeHandler();
-  }, [closeHandler]);
-
-  const confirmHandler = useCallback((): void => {
-    if (isEditing) {
-      if (editingExpenseId) {
-        updateExpense({
-          id: editingExpenseId,
-          data: {
-            description: "Updated expense",
-            amount: 1,
-            date: new Date(),
-          },
-        });
+  const confirmHandler = useCallback(
+    (data: Omit<TExpense, "id">): void => {
+      if (isEditing) {
+        if (editingExpenseId) {
+          updateExpense({
+            id: editingExpenseId,
+            data,
+          });
+        }
+      } else {
+        addExpense(data);
       }
-    } else {
-      addExpense({
-        description: "Added expense",
-        amount: 0,
-        date: new Date(),
-      });
-    }
-    closeHandler();
-  }, [closeHandler]);
+      closeHandler();
+    },
+    [closeHandler]
+  );
+
+  const selectedExpense = useMemo(() => {
+    return expenses.find(({ id }) => id === editingExpenseId);
+  }, [editingExpenseId]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.buttons}>
-        <Button style={styles.button} onPress={cancelHandler} mode="flat">
-          Cancel
-        </Button>
-        <Button style={styles.button} onPress={confirmHandler}>
-          {isEditing ? "Update" : "Add"}
-        </Button>
-      </View>
+    <View style={styles.form}>
+      <ExpenseForm
+        onSubmit={confirmHandler}
+        onClose={closeHandler}
+        submitButtonLabel={isEditing ? "Update" : "Add"}
+        initialData={selectedExpense}
+      />
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -82,7 +77,7 @@ export const ManageExpense: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  form: {
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
@@ -93,14 +88,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderTopColor: GlobalStyles.colors.primary200,
     alignItems: "center",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
 });

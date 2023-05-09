@@ -15,7 +15,7 @@ export const ExpensesOutput: FC<TExpensesOutputProps> = ({
   expensePeriod,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.form}>
       <ExpensesSummary expenses={expenses} periodName={expensePeriod} />
       {expenses.length === 0 ? (
         <View style={styles.noDataContainer}>
@@ -30,7 +30,7 @@ export const ExpensesOutput: FC<TExpensesOutputProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  form: {
     paddingHorizontal: 24,
     paddingTop: 24,
     paddingBottom: 0,
