@@ -8,19 +8,20 @@ import {
   useReducer,
 } from "react";
 import { TExpense } from "../components/ExpensesOutput/types";
-import { DUMMY_EXPENSES } from "../components/ExpensesOutput/constants";
 
 type TExpensesContext = {
   expenses: TExpense[];
   addExpense: (data: TAddPayload) => void;
   deleteExpense: (data: TDeletePayload) => void;
   updateExpense: (data: TUpdatePayload) => void;
+  setExpenses: (expenses: TExpense[]) => void;
 };
 const initialValue: TExpensesContext = {
   expenses: [],
   addExpense: () => {},
   deleteExpense: () => {},
   updateExpense: () => {},
+  setExpenses: () => {},
 };
 export const ExpensesContext = createContext<TExpensesContext>(initialValue);
 
@@ -28,7 +29,7 @@ type TState = {
   expenses: TExpense[];
 };
 
-type TAddPayload = Omit<TExpense, "id">;
+type TAddPayload = TExpense;
 type TAddAction = {
   type: "ADD";
   payload: TAddPayload;
@@ -60,17 +61,23 @@ type TUpdateAction = {
   type: "UPDATE";
   payload: TUpdatePayload;
 };
-type TAction = TAddAction | TDeleteAction | TUpdateAction;
+
+const setAction = (payload: TSetPayload): TSetAction => ({
+  type: "SET",
+  payload,
+});
+type TSetPayload = TExpense[];
+type TSetAction = {
+  type: "SET";
+  payload: TSetPayload;
+};
+
+type TAction = TAddAction | TDeleteAction | TUpdateAction | TSetAction;
 
 const expensesReducer = (state: TState, action: TAction): TState => {
   switch (action.type) {
     case "ADD": {
-      const newExpense: TExpense = {
-        id: Math.random().toString(10),
-        ...action.payload,
-      };
-
-      const expenses = [newExpense, ...state.expenses];
+      const expenses = [action.payload, ...state.expenses];
 
       return {
         ...state,
@@ -101,13 +108,19 @@ const expensesReducer = (state: TState, action: TAction): TState => {
         expenses,
       };
     }
+    case "SET": {
+      return {
+        ...state,
+        expenses: action.payload.reverse(),
+      };
+    }
     default:
       return state;
   }
 };
 
 const initialState: TState = {
-  expenses: DUMMY_EXPENSES,
+  expenses: [],
 };
 
 type TExpensesContextProviderProps = {
@@ -137,6 +150,12 @@ export const ExpensesContextProvider: FC<TExpensesContextProviderProps> = ({
     },
     [dispatch]
   );
+  const setExpenses = useCallback(
+    (payload: TSetPayload): void => {
+      dispatch(setAction(payload));
+    },
+    [dispatch]
+  );
 
   const value: TExpensesContext = useMemo(() => {
     return {
@@ -144,6 +163,7 @@ export const ExpensesContextProvider: FC<TExpensesContextProviderProps> = ({
       addExpense,
       deleteExpense,
       updateExpense,
+      setExpenses,
     };
   }, [expenses, addExpense, deleteExpense, updateExpense]);
 

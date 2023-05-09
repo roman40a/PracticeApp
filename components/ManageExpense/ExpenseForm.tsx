@@ -94,8 +94,6 @@ export const ExpenseForm: FC<TExpenseFormProps> = ({
     }
   }, [input, onSubmit]);
 
-  console.log(input);
-
   const formIsInvalid =
     !input.amount.isValid || !input.date.isValid || !input.description.isValid;
 
